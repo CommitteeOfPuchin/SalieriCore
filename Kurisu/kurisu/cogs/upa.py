@@ -1,5 +1,4 @@
 from discord.ext import commands
-from .utils import checks
 import discord, time, datetime, sqlite3
 import kurisu.prefs
 import kurisu.tasks

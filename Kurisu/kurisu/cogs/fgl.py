@@ -1,6 +1,7 @@
 import inspect, re
 from discord.ext import commands
 import discord
+import kurisu.prefs
 
 _mentions_transforms = {
 	'@everyone': '@\u200beveryone',
@@ -67,6 +68,15 @@ class FGL:
 				destination = ctx.message.author
 
 		await bot.send_message(destination, embed=helpEmbed)
+
+	@commands.command()
+	async def status(self):
+		stats = kurisu.prefs.info()
+
+		emb = kurisu.prefs.Embeds.new('normal')
+		emb.add_field(name = 'Статистика', value='CPU: {d[0]}%\nRAM Total: {d[1]}MB\nRAM Used: {d[2]}MB\nTemp: {d[4]}`C\nUptime: {d[5]}'.format(d=stats))
+
+		await self.bot.say(embed = emb)
 
 def setup(bot):
 	bot.remove_command("help")

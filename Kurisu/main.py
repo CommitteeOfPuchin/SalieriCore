@@ -24,6 +24,7 @@ async def on_ready():
 	kurisu.tasks.loop = client.loop
 	await kurisu.tasks.new(kurisu.nyaa.fetch)
 	await kurisu.tasks.new(kurisu.alpaca.alpacaLoop)
+	kurisu.prefs.startup = datetime.datetime.now()
 	global ready
 	ready = True
     
@@ -95,6 +96,8 @@ async def on_command_error(error: Exception, ctx: commands.Context):
 	elif isinstance(error, commands.MissingRequiredArgument):
 		await client.send_message(ctx.message.channel, 'Недостаточно аргументов')
 		return
+	else:
+		await client.send_message(ctx.message.channel, 'Упс... Информация об ошибке в %s' % kurisu.prefs.Channels.log.mention)
 	
 # Тут начинаются команды
 
