@@ -12,6 +12,7 @@ class Servers:
 
 class Embeds:
 	error = discord.Embed(colour = discord.Colour.red())
+	alert = discord.Embed(colour = discord.Colour.gold())
 
 	welcome = discord.Embed(colour = discord.Colour.green())
 	welcome.title = "Новый Лабмем"
@@ -40,6 +41,7 @@ class Roles:
 
 def init():
 	Embeds.error.set_author(name = "Я ОШИБКА!!", icon_url="https://pp.userapi.com/c831209/v831209232/15d24c/tA_XzT7cXYA.jpg")
+	Embeds.alert.set_author(name = "Amadeus Systems", icon_url="https://pp.userapi.com/c831209/v831209232/15d24c/tA_XzT7cXYA.jpg")
 
 	Embeds.nyaa.set_thumbnail(url = 'https://sun9-6.userapi.com/c840635/v840635891/7bad7/o7JkD2yf8lg.jpg')
 	Embeds.nyaa.set_author(name = 'Amadeus System || Новые раздачи')
