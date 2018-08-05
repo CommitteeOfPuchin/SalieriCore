@@ -11,13 +11,25 @@ class SteinsGate:
 
 	@commands.command()
 	async def tips(self, *tip: str):
-		"""Поиск по TIPS Steins;Gate."""
+		"""Поиск по TIPS Steins;Gate.
+
+		Аргументы:
+		-----------
+		tip: `str`
+			TIP, который нужно найти.
+		"""
 		tip = ' '.join(tip)
 		await kurisu.tips.search(tip, self.client)
 
 	@commands.command()
 	async def sg0(self, episode: int):
-		"""Выводит список .torrent файлов."""
+		"""Выводит список .torrent файлов.
+
+		Аргументы:
+		-----------
+		episide: `int`
+			Номер запрашиваемого эпизода.
+		"""
 		tmpEmbed = kurisu.prefs.Embeds.new('SG0')
 	
 		# Nyaa
@@ -54,7 +66,13 @@ class SteinsGate:
 
 	@commands.command()
 	async def tips0(self, *tip: str):
-		"""Поиск по TIPS Steins;Gate 0."""
+		"""Поиск по TIPS Steins;Gate 0.
+
+		Аргументы:
+		-----------
+		tip: `str`
+			TIP, который нужно найти.
+		"""
 		tip = ' '.join(tip)
 		await kurisu.tips.search(tip, self.client, 0)
 

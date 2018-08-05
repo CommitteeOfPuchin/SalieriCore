@@ -14,7 +14,7 @@ class Upa:
 
 	@commands.group(pass_context=True)
 	async def alpaca(self, ctx):
-		"""Альпака"""
+		"""Временный мут"""
 		if not ctx.message.author.server_permissions.view_audit_logs:
 			await self.bot.say("Ты не можешь это сделать, ты не модератор/администратор.")
 			return
