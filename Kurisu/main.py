@@ -48,7 +48,7 @@ async def on_member_join(member):
 
 	tmpEmbed = kurisu.prefs.Embeds.new('welcome')
 	tmpEmbed.set_thumbnail(url=member.avatar_url)
-	tmpEmbed.add_field(name="Никнейм", value=member)
+	tmpEmbed.add_field(name="Лабмембер №%s" % str(len(member.server.members)-8), value=member)
 	tmpEmbed.add_field(name="ID", value=member.id)
 	if len(a) != 0:
 		t = datetime.datetime.fromtimestamp(a[0][2]) - datetime.timedelta(hours=3)

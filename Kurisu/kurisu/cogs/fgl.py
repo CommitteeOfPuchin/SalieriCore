@@ -2,6 +2,7 @@ import inspect, re
 from discord.ext import commands
 import discord
 import kurisu.prefs
+import datetime
 
 _mentions_transforms = {
 	'@everyone': '@\u200beveryone',
@@ -77,6 +78,66 @@ class FGL:
 		emb.add_field(name = 'Статистика', value='CPU: {d[0]}%\nRAM Total: {d[1]}MB\nRAM Used: {d[2]}MB\nTemp: {d[4]}`C\nUptime: {d[5]}'.format(d=stats))
 
 		await self.bot.say(embed = emb)
+
+	@commands.command(pass_context=True)
+	async def info(self, ctx):
+		if len(ctx.message.mentions) == 0:
+			users = [ctx.message.author]
+		else:
+			users = ctx.message.mentions
+
+		for u in users:
+			emb = kurisu.prefs.Embeds.new('normal')
+			emb.colour = u.colour
+			emb.title = '%s%s%s' % (u,  "" if (u.name == u.display_name) else (" a.k.a %s" % u.display_name), u.bot and " [BOT]" or '')
+			emb.add_field(name="ID:", value=u.id)
+			embDays = (datetime.datetime.now() - u.joined_at).days
+			def isYa(num):
+				return (num%10 > 1) and (num%10 < 5) and ((num//10 == 0) or (num//10 > 1))
+			
+			def dateParse(days):
+				res = ''
+				years, days = days//365, days%365
+				if years > 0:
+					if years == 1:
+						res = "1 год"
+					elif (years > 1) and (years < 5):
+						res = "%s года" % years
+					else:
+						res = "%s лет" % years
+				months, days = days//30, days%30
+				if months > 0:
+					if months == 1:
+						res = ', '.join([res, "1 месяц"])
+					elif isYa(months):
+						res = ', '.join([res, "%s месяца" % months])
+					else:
+						res = ', '.join([res, "%s месяцев" % months])
+				if days > 0:
+					if days == 1:
+						res = ', '.join([res, "1 день"])
+					elif isYa(days):
+						res = ', '.join([res, "%s дня" % days])
+					else:
+						res = ', '.join([res, "%s дней" % days])
+
+				if res.startswith(', '):
+					res = res[2:]
+					if res.startswith(', '):
+						res = res[2:]
+
+				if res == '':
+					res = 'Ни одного дня'
+				return res
+
+			emb.add_field(name="На сервере:", value=dateParse(embDays))
+			r, g, b = u.top_role.colour.to_tuple()
+			emb.add_field(name="Основная роль:", value='%s (#%02x%02x%02x)' % ((u.top_role.name == "@everyone" and "Без роли" or u.top_role.name), r, g, b))
+			roles = [r.name for r in u.roles[::-1][:-1] if r != u.top_role]
+			if len(roles) > 0:
+				emb.add_field(name="Остальные роли", value=", ".join(roles))
+			emb.set_thumbnail(url=u.avatar_url)
+			await self.bot.say(embed=emb)
 
 def setup(bot):
 	bot.remove_command("help")
