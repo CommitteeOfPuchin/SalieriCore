@@ -66,6 +66,8 @@ async def on_member_join(member):
 
 @client.event
 async def on_member_remove(member):
+	if member.server.id != kurisu.prefs.Servers.FGL.id:
+		return
 	tmpEmbed = kurisu.prefs.Embeds.new('goodbye')
 	tmpEmbed.set_thumbnail(url=member.avatar_url)
 	tmpEmbed.add_field(name="Никнейм", value=member)
