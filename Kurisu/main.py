@@ -47,7 +47,7 @@ async def on_member_join(member):
 	a = cursor.fetchall()
 
 	tmpEmbed = kurisu.prefs.Embeds.new('welcome')
-	tmpEmbed.set_thumbnail(url=member.avatar_url)
+	tmpEmbed.set_thumbnail(url=kurisu.prefs.avatar_url(member))
 	tmpEmbed.add_field(name="Лабмембер №%s" % str(len(member.server.members)-8), value=member)
 	tmpEmbed.add_field(name="ID", value=member.id)
 	if len(a) != 0:
@@ -70,7 +70,7 @@ async def on_member_remove(member):
 	if member.server.id != kurisu.prefs.Servers.FGL.id:
 		return
 	tmpEmbed = kurisu.prefs.Embeds.new('goodbye')
-	tmpEmbed.set_thumbnail(url=member.avatar_url)
+	tmpEmbed.set_thumbnail(url=kurisu.prefs.avatar_url(member))
 	tmpEmbed.add_field(name="Никнейм", value=member)
 	tmpEmbed.add_field(name="ID", value=member.id)
 	tmpEmbed.set_image(url="https://i.imgur.com/wupSJAh.gif")

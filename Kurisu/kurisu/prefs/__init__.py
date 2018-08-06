@@ -15,6 +15,9 @@ def parse_delta(dt):
 	m, s = s//60, s%60
 
 	return '%s %s, %s:%s:%s' % (tuple([str(d), ds, str(h).zfill(2), str(m).zfill(2), str(s).zfill(2)]))
+	
+def avatar_url(member):
+	return 'https://cdn.discordapp.com/avatars/{0.id}/{0.avatar}.{1}'.format(member, 'png')
 
 def info():
 	info = []

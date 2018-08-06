@@ -154,7 +154,7 @@ class FGL:
 			roles = [r.name for r in u.roles[::-1][:-1] if r != u.top_role]
 			if len(roles) > 0:
 				emb.add_field(name="Остальные роли", value=", ".join(roles), inline=False)
-			emb.set_thumbnail(url=u.avatar_url)
+			emb.set_thumbnail(url=kurisu.prefs.avatar_url(u))
 			await self.bot.say(embed=emb)
 
 def setup(bot):
