@@ -11,7 +11,7 @@ client = commands.Bot(command_prefix='!', description='Amadeus Systems', formatt
 
 ready = False
 taskList = {}
-  
+
 @client.event
 async def on_ready():
 	print('[Discord] | Initializing tips')
@@ -27,7 +27,7 @@ async def on_ready():
 	kurisu.prefs.startup = datetime.datetime.now()
 	global ready
 	ready = True
-    
+
 @client.event
 async def on_message(message):
     #if message.channel.id != "446333540381229066":
@@ -36,7 +36,7 @@ async def on_message(message):
 
 	if message.content == 'Nullpo':
 		await client.send_message(message.channel, 'Gah!')
-      
+
 @client.event
 async def on_member_join(member):
 	if member.server.id != kurisu.prefs.Servers.FGL.id:
@@ -75,21 +75,21 @@ async def on_member_remove(member):
 	tmpEmbed.add_field(name="ID", value=member.id)
 	tmpEmbed.set_image(url="https://i.imgur.com/wupSJAh.gif")
 	await client.send_message(kurisu.prefs.Channels.lab, embed=tmpEmbed)
-	
+
 @client.event
 async def on_command_error(error: Exception, ctx: commands.Context):
 	ignored = (commands.CommandNotFound, commands.UserInputError)
-	
+
 	if isinstance(error, ignored):
 		return
-	
+
 	tmpEmbed = kurisu.prefs.Embeds.new('error')
 	tb = traceback.format_exception(etype=type(error), value=error, tb=error.__traceback__, limit=5)
 	tmpEmbed.add_field(name="Вызвал", value=ctx.message.author)
 	tmpEmbed.add_field(name="Сообщение", value=ctx.message.content)
 	tmpEmbed.add_field(name="Traceback", value='%s%s' % (''.join(tb[:5]), ''.join(tb[-1])))
 	await client.send_message(kurisu.prefs.Channels.log, embed=tmpEmbed)
-	
+
 	if isinstance(error, commands.BadArgument):
 		await client.send_message(ctx.message.channel, 'Ошибка в аргументе')
 		return
@@ -98,7 +98,7 @@ async def on_command_error(error: Exception, ctx: commands.Context):
 		return
 	else:
 		await client.send_message(ctx.message.channel, 'Упс... Информация об ошибке в %s' % kurisu.prefs.Channels.log.mention)
-	
+
 # Тут начинаются команды
 
 if __name__ == "__main__":
