@@ -14,19 +14,22 @@ taskList = {}
 
 @client.event
 async def on_ready():
-	print('[Discord] | Initializing tips')
-	kurisu.tips.init()
-	print('[Discord] | Initializing preferences')
-	kurisu.prefs.init()
-	kurisu.prefs.discordClient = client
-	print('[Discord] | Logged in as: %s | %s' % (client.user.name, client.user.id))
-	await client.change_presence(game=discord.Game(name='Steins;Gate 0', type=3))
-	kurisu.tasks.loop = client.loop
-	await kurisu.tasks.new(kurisu.nyaa.fetch)
-	await kurisu.tasks.new(kurisu.alpaca.alpacaLoop)
-	kurisu.prefs.startup = datetime.datetime.now()
 	global ready
-	ready = True
+	if ready == True:
+		await client.send_message(kurisu.prefs.Channels.dev, "Переподключение...")
+	else:
+		print('[Discord] | Initializing tips')
+		kurisu.tips.init()
+		print('[Discord] | Initializing preferences')
+		kurisu.prefs.init()
+		kurisu.prefs.discordClient = client
+		print('[Discord] | Logged in as: %s | %s' % (client.user.name, client.user.id))
+		await client.change_presence(game=discord.Game(name='Steins;Gate 0', type=3))
+		kurisu.tasks.loop = client.loop
+		await kurisu.tasks.new(kurisu.nyaa.fetch)
+		await kurisu.tasks.new(kurisu.alpaca.alpacaLoop)
+		kurisu.prefs.startup = datetime.datetime.now()
+		ready = True
 
 @client.event
 async def on_message(message):
