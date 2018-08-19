@@ -1,7 +1,7 @@
 discordToken = "<token>"
 
 import discord, asyncio, urllib.request, os.path, sqlite3, copy, time, datetime
-import kurisu.nyaa, kurisu.console, kurisu.tips, kurisu.override, kurisu.alpaca, kurisu.prefs, kurisu.tasks
+import kurisu.nyaa, kurisu.tips, kurisu.override, kurisu.alpaca, kurisu.prefs, kurisu.tasks
 import traceback
 from discord.ext import commands
 
@@ -21,8 +21,8 @@ async def on_ready():
 		print('[Discord] | Initializing tips')
 		kurisu.tips.init()
 		print('[Discord] | Initializing preferences')
-		kurisu.prefs.init()
 		kurisu.prefs.discordClient = client
+		kurisu.prefs.init()
 		print('[Discord] | Logged in as: %s | %s' % (client.user.name, client.user.id))
 		await client.change_presence(game=discord.Game(name='Steins;Gate 0', type=3))
 		kurisu.tasks.loop = client.loop

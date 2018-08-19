@@ -2,8 +2,8 @@ import discord, asyncio, time, datetime, sqlite3
 from math import floor
 import kurisu.prefs
 
-ibn = discord.Channel(id='475059718562250752', server=discord.Server(id='380104197267521537'))
-alpacaRole = discord.Role(id = "474224730245955584", server=discord.Server(id='380104197267521537'))
+ibn = kurisu.prefs.Channels.dev
+alpacaRole = kurisu.prefs.Roles.alpaca
 dealp = [False,'']
 
 async def alpacaLoop():

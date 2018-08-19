@@ -2,7 +2,7 @@ import discord, copy, os, datetime
 
 def parse_time(dt):
     months = ['янв.', 'фев.', 'мар.', 'апр.', 'мая', 'июня', 'июля', 'авг.', 'сен.', 'окт.', 'ноя.', 'дек.']
-    
+
     return ['%s %s %s' % (dt[2], months[dt[1]-1], dt[0]),  '%s:%s:%s' % (str(dt[3]).zfill(2), str(dt[4]).zfill(2), str(dt[5]).zfill(2))]
 
 def parse_delta(dt):
@@ -15,7 +15,7 @@ def parse_delta(dt):
 	m, s = s//60, s%60
 
 	return '%s %s, %s:%s:%s' % (tuple([str(d), ds, str(h).zfill(2), str(m).zfill(2), str(s).zfill(2)]))
-	
+
 def avatar_url(member):
 	return 'https://cdn.discordapp.com/avatars/{0.id}/{0.avatar}.{1}'.format(member, 'png')
 
