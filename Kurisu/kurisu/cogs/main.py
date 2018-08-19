@@ -17,7 +17,7 @@ class Amadeus:
 			return
 		if ctx.invoked_subcommand is None:
 			if ctx.subcommand_passed == None:
-				mods = [i for i in modules if i.startswith('kurisu.cogs.')]
+				mods = [i for i in modules if (i.startswith('kurisu.cogs.') or i.startswith('kurisu.system.'))]
 				emb = kurisu.prefs.Embeds.new('normal')
 				emb.add_field(name="Зубцы", value="\n".join(mods))
 				await self.bot.say(embed=emb)
@@ -37,9 +37,16 @@ class Amadeus:
 		"""
 		if ctx.message.author.id != "185459415514742784" :
 			return
+		importlib.invalidate_caches()
 		try:
-			if not ext.startswith('kurisu.cogs'):
-				ext = "kurisu.cogs.%s" % ext
+			if ext.find('system.') != -1:
+				if not ext.startswith('kurisu.system.'):
+					ext = 'kurisu.%s' % ext
+			elif not ext.startswith('kurisu.'):
+					if not ext.startswith('kurisu.cogs.'):
+						ext = 'kurisu.cogs.%s' % ext
+					else:
+						ext = 'kurisu.%s' % ext
 			self.bot.unload_extension(ext)
 			self.bot.load_extension(ext)
 		except (AttributeError, ImportError) as e:
@@ -61,9 +68,17 @@ class Amadeus:
 		"""
 		if ctx.message.author.id != "185459415514742784" :
 			return
+		importlib.invalidate_caches()
 		try:
-			if ext.find('kurisu.cogs') == -1:
-				ext = "kurisu.cogs.%s" % ext
+			if ext.find('system.') != -1:
+				if not ext.startswith('kurisu.system.'):
+					ext = 'kurisu.%s' % ext
+			elif not ext.startswith('kurisu.'):
+					if not ext.startswith('kurisu.cogs.'):
+						ext = 'kurisu.cogs.%s' % ext
+					else:
+						ext = 'kurisu.%s' % ext
+
 			self.bot.load_extension(ext)
 		except (AttributeError, ImportError) as e:
 			await self.bot.say("Произошла ошибка во время подключения {} .".format(ext))
@@ -84,8 +99,16 @@ class Amadeus:
 		"""
 		if ctx.message.author.id != "185459415514742784" :
 			return
-		if ext.find('kurisu.cogs') == -1:
-			ext = "kurisu.cogs.%s" % ext
+
+		if ext.find('system.') != -1:
+			if not ext.startswith('kurisu.system.'):
+				ext = 'kurisu.%s' % ext
+		elif not ext.startswith('kurisu.'):
+				if not ext.startswith('kurisu.cogs.'):
+					ext = 'kurisu.cogs.%s' % ext
+				else:
+					ext = 'kurisu.%s' % ext
+
 		self.bot.unload_extension(ext)
 
 		await self.bot.say("Зубец {} отключен.".format(ext))
@@ -98,7 +121,7 @@ class Amadeus:
 			return
 		if ctx.invoked_subcommand is None:
 			if ctx.subcommand_passed == None:
-				mods = [i for i in modules if (i.startswith('kurisu.') and not (i.startswith('kurisu.cogs')))]
+				mods = [i for i in modules if (i.startswith('kurisu.') and not (i.startswith('kurisu.cogs') or i.startswith('kurisu.system.')))]
 				emb = kurisu.prefs.Embeds.new('normal')
 				emb.add_field(name="Модули", value="\n".join(mods))
 				await self.bot.say(embed=emb)
