@@ -1,6 +1,6 @@
 from lxml import html
 import asyncio, sqlite3, urllib.request, discord
-import time, datetime, copy, os.path
+import time, datetime, copy, os.path, aiohttp
 
 templates = {'HorribleSubs': ['[HorribleSubs] Steins Gate 0 - ', ' [1080p].mkv'], 'Erai-raws': ['[Erai-raws] Steins;Gate 0 - ', ' [1080p].mkv']}
 nyaa_dls = ['HorribleSubs', 'Erai-raws']
@@ -8,6 +8,11 @@ nyaa_dls = ['HorribleSubs', 'Erai-raws']
 import kurisu.prefs
 
 dsgt = False
+
+async def getPage(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
 
 async def fetch():
     channel = kurisu.prefs.Channels.news
@@ -45,10 +50,8 @@ async def fetch():
       t = time.localtime()
       if (t[6] == 2 and t[3] >= 19) or (t[6] == 3 and t[3] < 6):
         dt = 1*60
-        await client.change_presence(game=discord.Game(name='торренты Nyaa.si', type=3))
       else:
         dt = 10*60
-        await client.change_presence(game=discord.Game(name='Steins;Gate 0', type=3))
         print('[Nyaa]    | Peers and leechs are up to date')
 
       if (t[6] == 2 and t[3] == 18 and t[4] < 55 and t[4] >= 45):
@@ -60,7 +63,12 @@ async def fetch():
 
 async def nyaa(dl):
     # TODO: Перепилить на aiohttp + в ссылку пихать магнет
-    page = html.fromstring(urllib.request.urlopen('https://nyaa.si/?f=0&c=1_2&q=steins+gate+0+%s+1080p' % dl).read())
+    try:
+        page = html.fromstring(await getPage('https://nyaa.si/?f=0&c=1_2&q=steins+gate+0+%s+1080p' % dl))
+    except:
+        print('[Nyaa]    | Error')
+        return []
+
     conn = sqlite3.connect('torr_db.sqlite3')
     cursor = conn.cursor()
     result = []

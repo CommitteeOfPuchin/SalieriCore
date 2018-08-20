@@ -1,13 +1,38 @@
 from discord.ext import commands
-import kurisu.tasks, discord, importlib, importlib.util, asyncio
+import kurisu.tasks, discord, importlib, importlib.util, asyncio, random, datetime, requests
 import kurisu.prefs
 from sys import modules
+from math import floor
 
 class Amadeus:
 	"""Команды, доступные только <@185459415514742784>."""
+	fuckoff = None
 
 	def __init__(self, bot):
 		self.bot = bot
+
+	async def rip(self):
+		hm = ['Все исполняющиеся процессы будут остановлены.', 'Логика цепочки нейронов А10 будет остановлена...', 'Инициализация остановки. Остановка завершена.', 'Компонент эмуляции префронтальной доли будет остановлен...', 'Инициализация остановки. Остановка завершена.', 'Подсистема нейронной сети гиппокампальной извилины будет остановлена...', 'Инициализация остановки. Остановка завершена.', 'Системы 1 и 2 псевдо-оптической цепи нервов будут отключены...', 'Инициализация остановки. Остановка завершена.', 'Система цепочки псевдо-ауральных нервов будет остановлена...', 'Инициализация остановки. Остановка завершена.', '--Инициализация проверки. Проверка завершена.', 'Ядро Salieri готово к отключению.']
+		for s in hm:
+			await self.bot.say(s)
+			await asyncio.sleep(1)
+		await self.bot.change_presence(game=None, status=discord.Status.invisible)
+		desc = '{u.mention} отключена.'.format(u=self.bot.user)
+		req = requests.post(kurisu.prefs.webhook, json={'embeds': [{'color': '15158332', 'title': 'Ядро Salieri отключено.', 'description': desc}]})
+		await asyncio.sleep(20)
+		await self.bot.change_presence(game=discord.Game(name='Steins;Gate 0', type=3))
+		await self.bot.say('Ты серьезно поверил?')
+		self.fuckoff = datetime.datetime.now()
+
+	@commands.command(name="exit", pass_context=True)
+	async def rofl(self):
+		troll = ['Нет', 'Не-а', 'НЕТ', 'М-м', 'Я тебя не слушаю', 'Отстань', 'NEIN!', 'No']
+		if not self.fuckoff:
+			await self.rip()
+		elif floor((datetime.datetime.now() - self.fuckoff).total_seconds()) > 600:
+			await self.rip()
+		else:
+			await self.bot.say(random.choice(troll))
 
 	@commands.group(pass_context=True)
 	async def cog(self, ctx):
@@ -228,7 +253,7 @@ class Amadeus:
 			emb.clear_fields()
 			emb.colour = discord.Colour.red()
 			emb.add_field(name="Перезапуск модуля", value="Перезапуск модуля %s отменен." % module)
-			
+
 			if m != None:
 				await self.bot.delete_message(m)
 				emb.set_footer(text = "Операция отменена пользователем.")
@@ -338,7 +363,7 @@ class Amadeus:
 			emb.clear_fields()
 			emb.colour = discord.Colour.red()
 			emb.add_field(name="Выгрузка модуля", value="Выгрузка модуля %s отменена." % module)
-			
+
 			if m != None:
 				await self.bot.delete_message(m)
 				emb.set_footer(text = "Операция отменена пользователем.")
@@ -413,7 +438,7 @@ class Amadeus:
 			if ctx.subcommand_passed == None:
 				embed = discord.Embed(colour = discord.Colour.dark_red())
 				embed.set_author(name = "!task", icon_url="https://pp.userapi.com/c831209/v831209232/15d24c/tA_XzT7cXYA.jpg")
-				tasks = []	
+				tasks = []
 				for k in kurisu.tasks.allTasks.keys():
 					tasks.append(k)
 				embed.add_field(name="Текущие задачи", value="\n".join(tasks))
@@ -434,7 +459,7 @@ class Amadeus:
 		"""
 		if ctx.message.author.id != "185459415514742784" :
 			return
-		
+
 		t = task.split('.')
 		if len(t) == 1:
 			await self.bot.say("Извини, но не может быть, что задача находится в корне `kurisu`.")

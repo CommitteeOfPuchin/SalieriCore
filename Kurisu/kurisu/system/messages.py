@@ -11,20 +11,20 @@ class Events:
 
 		if message.content == 'Nullpo':
 			await self.bot.send_message(message.channel, 'Gah!')
-	
+
 	async def on_command_error(self, error: Exception, ctx: commands.Context):
 		ignored = (commands.CommandNotFound, commands.UserInputError)
-	
+
 		if isinstance(error, ignored):
 			return
-	
+
 		tmpEmbed = kurisu.prefs.Embeds.new('error')
 		tb = traceback.format_exception(etype=type(error), value=error, tb=error.__traceback__, limit=5)
 		tmpEmbed.add_field(name="Вызвал", value=ctx.message.author.mention)
 		tmpEmbed.add_field(name="Сообщение", value=ctx.message.content)
 		tmpEmbed.add_field(name="Traceback", value='%s%s' % (''.join(tb[:5]), ''.join(tb[-1])))
 		await self.bot.send_message(kurisu.prefs.Channels.log, embed=tmpEmbed)
-	
+
 		if isinstance(error, commands.BadArgument):
 			await self.bot.send_message(ctx.message.channel, 'Ошибка в аргументе')
 			return
@@ -50,6 +50,6 @@ class Events:
 
 		tmpEmbed.add_field(name="Traceback", value='%s%s' % (''.join(tb[:5]), ''.join(tb[-1])))
 		await self.bot.send_message(kurisu.prefs.Channels.log, embed=tmpEmbed)
-		
+
 def setup(bot):
 	bot.add_cog(Events(bot))
