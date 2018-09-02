@@ -29,7 +29,7 @@ class Amadeus:
 		troll = ['Нет', 'Не-а', 'НЕТ', 'М-м', 'Я тебя не слушаю', 'Отстань', 'NEIN!', 'No']
 		if not self.fuckoff:
 			await self.rip()
-		elif floor((datetime.datetime.now() - self.fuckoff).total_seconds()) > 600:
+		elif floor((datetime.datetime.now() - self.fuckoff).total_seconds()) > 60 * 60:
 			await self.rip()
 		else:
 			await self.bot.say(random.choice(troll))

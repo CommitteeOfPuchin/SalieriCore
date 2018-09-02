@@ -1,4 +1,4 @@
-import inspect, re
+import inspect, re, os
 from discord.ext import commands
 import discord
 import kurisu.prefs
@@ -10,6 +10,13 @@ _mentions_transforms = {
 	}
 
 _mention_pattern = re.compile('|'.join(_mentions_transforms.keys()))
+
+def cache_size():
+	try:
+		stdout = os.popen('du -h /home/pi/MusicBot/audio_cache').readline()
+		return "%s" % stdout.split()[0].replace(',', '.')
+	except:
+		return "недоступен"
 
 class FGL:
 	"""Просто все подряд, десу"""
@@ -78,12 +85,14 @@ class FGL:
 		emb = kurisu.prefs.Embeds.new('normal')
 		emb.add_field(name = 'Статистика', value='CPU: {d[0]}%\nRAM Total: {d[1]}MB\nRAM Used: {d[2]}MB\nTemp: {d[4]}`C\nUptime: {d[5]}'.format(d=stats))
 
+		emb.add_field(name = 'Моэка', value='Кэш: %s' % cache_size())
+
 		await self.bot.say(embed = emb)
 
 	@commands.command(pass_context=True)
 	async def info(self, ctx, *users: str):
 		"""Возвращает информацию о пользователе
-		
+
 		Аргументы:
 		-----------
 		users: [`discord.Member`]
@@ -103,7 +112,7 @@ class FGL:
 			embDays = (datetime.datetime.now() - u.joined_at).days
 			def isYa(num):
 				return (num%10 > 1) and (num%10 < 5) and ((num//10 == 0) or (num//10 > 1))
-			
+
 			def dateParse(days):
 				res = ''
 				years, days = days//365, days%365
