@@ -2,17 +2,18 @@ from lxml import etree
 import asyncio, sqlite3, urllib.request, discord
 import time, datetime, copy, os.path, aiohttp, aiofiles
 
-templates = {'HorribleSubs': ['[HorribleSubs] Steins Gate 0 - ', ' [1080p].mkv'], 'Erai-raws': ['[Erai-raws] Steins;Gate 0 - ', ' [1080p].mkv']}
+templates = {'HorribleSubs': ['[HorribleSubs] Steins Gate 0 - ', ' [1080p].mkv'], 'Erai-raws': ['[Erai-raws] Steins Gate 0 - ', ' [1080p].mkv']}
 nyaa_dls = ['HorribleSubs', 'Erai-raws']
 
 import kurisu.prefs
 
 dsgt = False
 
-async def getPage(url):
+async def getPage(dl):
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            return await response.text()
+        async with session.get('http://nyaa.si/?page=rss&q=steins+gate+0+%s+1080p&c=0_0&f=0' % dl) as response:
+            resp = await response.text()
+    return resp
 
 async def fetch():
     channel = kurisu.prefs.Channels.news
@@ -62,11 +63,19 @@ async def fetch():
       await asyncio.sleep(dt)
 
 async def nyaa(dl):
-    try:
-        page = etree.fromstring(await getPage('http://nyaa.si/?f=0&c=0_0&q=steins+gate+0+%s+1080p&page=rss' % dl))
-    except:
-        print('[Nyaa]    | %s: error' % dl)
-        return []
+    es = 1
+    while True:
+        try:
+            resp = await asyncio.wait_for(getPage(dl), 1)
+            break
+        except Exception as e:
+            if es < 10:
+                es += 1
+            else:
+                print('[Nyaa]    | %s timed out' % dl)
+                return []
+
+    page = etree.fromstring(resp)
 
     page = page.xpath('/rss/channel/item')
 
@@ -76,7 +85,10 @@ async def nyaa(dl):
 
     for item in page[::-1]:
         name = item.xpath('.//title')[0].text
-        episode = name.replace(templates[dl][0], '').replace(templates[dl][1], '')
+        try:
+            episode = name.replace(';', ' ').replace(templates[dl][0], '').replace(templates[dl][1], '')
+        except Exception as e:
+            print(e)
         tFile = item.xpath('.//link')[0].text
         tFile = tFile[tFile.rfind('/')+1:tFile.rfind('.')]
 
@@ -87,7 +99,7 @@ async def nyaa(dl):
                         f = await aiofiles.open('/home/pi/sg-torrents/%s/%s.torrent' % (dl, tFile), mode='wb')
                         await f.write(await resp.read())
                         await f.close()
-
+                        
         seed = item.xpath('.//nyaa:seeders', namespaces=item.nsmap)[0].text
         leech = item.xpath('.//nyaa:leechers', namespaces=item.nsmap)[0].text
 
@@ -100,7 +112,10 @@ async def nyaa(dl):
 
         if db_id == None:
             print('[Nyaa]    | New nyaa torrent: %s' % name)
-            cursor.execute('insert into torrents (link, seeders, leechers, dl, episode) values (%s, %s, %s, "%s", %s)' % (tFile, seed, leech, dl, episode))
+            try:
+                cursor.execute('insert into torrents (link, seeders, leechers, dl, episode) values (%s, %s, %s, "%s", %s)' % (tFile, seed, leech, dl, episode))
+            except Exception as e:
+                print(e)
             result.append((name, tFile, seed, leech))
         else:
             cursor.execute('update torrents SET seeders = %s, leechers = %s WHERE id = %s' % (seed, leech, db_id))
