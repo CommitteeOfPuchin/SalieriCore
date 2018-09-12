@@ -92,14 +92,6 @@ async def nyaa(dl):
         tFile = item.xpath('.//link')[0].text
         tFile = tFile[tFile.rfind('/')+1:tFile.rfind('.')]
 
-        if not os.path.isfile('/home/pi/sg-torrents/%s/%s.torrent' % (dl, tFile)):
-            async with aiohttp.ClientSession() as session:
-                async with session.get('http://nyaa.si/download/%s.torrent' % tFile) as resp:
-                    if resp.status == 200:
-                        f = await aiofiles.open('/home/pi/sg-torrents/%s/%s.torrent' % (dl, tFile), mode='wb')
-                        await f.write(await resp.read())
-                        await f.close()
-                        
         seed = item.xpath('.//nyaa:seeders', namespaces=item.nsmap)[0].text
         leech = item.xpath('.//nyaa:leechers', namespaces=item.nsmap)[0].text
 
