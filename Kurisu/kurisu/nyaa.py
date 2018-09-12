@@ -1,6 +1,6 @@
-from lxml import html
+from lxml import etree
 import asyncio, sqlite3, urllib.request, discord
-import time, datetime, copy, os.path, aiohttp
+import time, datetime, copy, os.path, aiohttp, aiofiles
 
 templates = {'HorribleSubs': ['[HorribleSubs] Steins Gate 0 - ', ' [1080p].mkv'], 'Erai-raws': ['[Erai-raws] Steins;Gate 0 - ', ' [1080p].mkv']}
 nyaa_dls = ['HorribleSubs', 'Erai-raws']
@@ -62,27 +62,34 @@ async def fetch():
       await asyncio.sleep(dt)
 
 async def nyaa(dl):
-    # TODO: Перепилить на aiohttp + в ссылку пихать магнет
     try:
-        page = html.fromstring(await getPage('https://nyaa.si/?f=0&c=1_2&q=steins+gate+0+%s+1080p' % dl))
+        page = etree.fromstring(await getPage('http://nyaa.si/?f=0&c=0_0&q=steins+gate+0+%s+1080p&page=rss' % dl))
     except:
-        print('[Nyaa]    | Error')
+        print('[Nyaa]    | %s: error' % dl)
         return []
+
+    page = page.xpath('/rss/channel/item')
 
     conn = sqlite3.connect('torr_db.sqlite3')
     cursor = conn.cursor()
     result = []
 
-    table = page.xpath('//table[contains(@class, "torrent-list")]//tr')[1:]
-    for tr in table[::-1]:
-        if time.mktime(datetime.datetime.strptime(tr.xpath('./td')[4].xpath('./text()')[0], "%Y-%m-%d %H:%M").timetuple()) < 1522540800:
-            continue
-        name = tr.xpath('./td')[1].xpath('./a/text()')[-1:][0]
+    for item in page[::-1]:
+        name = item.xpath('.//title')[0].text
         episode = name.replace(templates[dl][0], '').replace(templates[dl][1], '')
-        tFile = tr.xpath('./td')[2].xpath('./a/@href')[0]
-        tFile = tFile[tFile.rfind('/')+1:tFile.find('.')]
-        seed = tr.xpath('./td')[5].xpath('./text()')[0]
-        leech = tr.xpath('./td')[6].xpath('./text()')[0]
+        tFile = item.xpath('.//link')[0].text
+        tFile = tFile[tFile.rfind('/')+1:tFile.rfind('.')]
+
+        if not os.path.isfile('/home/pi/sg-torrents/%s/%s.torrent' % (dl, tFile)):
+            async with aiohttp.ClientSession() as session:
+                async with session.get('http://nyaa.si/download/%s.torrent' % tFile) as resp:
+                    if resp.status == 200:
+                        f = await aiofiles.open('/home/pi/sg-torrents/%s/%s.torrent' % (dl, tFile), mode='wb')
+                        await f.write(await resp.read())
+                        await f.close()
+
+        seed = item.xpath('.//nyaa:seeders', namespaces=item.nsmap)[0].text
+        leech = item.xpath('.//nyaa:leechers', namespaces=item.nsmap)[0].text
 
         cursor.execute('SELECT id FROM torrents WHERE link = %s' % tFile)
 

@@ -83,6 +83,7 @@ def init():
 	Embeds.nyaa.title = 'Новые раздачи'
 
 	Embeds.dsgt.set_thumbnail(url = 'https://pp.userapi.com/c846520/v846520774/54eed/7GAYm3VeAkk.jpg')
-	Embeds.dsgt.add_field(name = 'Disgusting Otaku', value = 'В 19:00 начинается трансляция нового эпизода на [dsgstng.com](https://dsgstng.com).\nНе пропустите! <:LeskisMirk:443050078047830018>')
+	#Embeds.dsgt.add_field(name = 'Disgusting Otaku', value = 'В 19:00 начинается трансляция нового эпизода на [dsgstng.com](https://dsgstng.com).\nНе пропустите! <:LeskisMirk:443050078047830018>')
+	Embeds.dsgt.add_field(name = "Disgusting Otaku", value="Телевизор сломался. Марш в вк в 19:00, лабмемы [vk.com/dsgtng](https://vk.com/dsgtng)\nКРЯЪ <:LeskisMirk:443050078047830018>")
 
 	Embeds.SG0.set_thumbnail(url = 'https://sun9-6.userapi.com/c840635/v840635891/7bad7/o7JkD2yf8lg.jpg')
