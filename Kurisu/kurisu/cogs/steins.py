@@ -1,6 +1,7 @@
 import kurisu.nyaa, kurisu.tips, kurisu.prefs
-import sqlite3, copy, time, os.path
+import sqlite3, time, os.path
 from discord.ext import commands
+
 
 class SteinsGate:
 	"""Команды, связанные с Steins;Gate"""
@@ -40,8 +41,8 @@ class SteinsGate:
 		cursor.execute("select title from episodes where id = %s" % episode)
 		ep = cursor.fetchall()
 		if len(ep) == 0:
- 			await self.client.say('```Такой серии нет и не будет.```')
- 			return "Fuck"
+			await self.client.say('```Такой серии нет и не будет.```')
+			return "Fuck"
 
 		for dl in kurisu.nyaa.nyaa_dls:
 			cursor.execute('select dl, link, seeders, leechers from torrents where episode = %s and dl = "%s"' % (episode, dl))
@@ -57,12 +58,12 @@ class SteinsGate:
 			if len(nyaaField) == 0:
 				nyaaField.append('Эпизода еще нет на nyaa.si')
 
-		tmpEmbed.add_field(name = 'nyaa.si', value = '\n'.join(nyaaField), inline = True)
+		tmpEmbed.add_field(name='nyaa.si', value='\n'.join(nyaaField), inline = True)
 		tmpEmbed.title = ep[0][0]
 		pt = kurisu.prefs.parse_time(time.localtime(os.path.getmtime('torr_db.sqlite3')))
 		pt = '%s в %s' % (pt[0], pt[1][:-3])
-		tmpEmbed.set_footer(text = 'Последнее обновление БД: %s' % pt)
-		await self.client.say(embed = tmpEmbed)
+		tmpEmbed.set_footer(text='Последнее обновление БД: %s' % pt)
+		await self.client.say(embed=tmpEmbed)
 
 	@commands.command()
 	async def tips0(self, *tip: str):
@@ -75,6 +76,7 @@ class SteinsGate:
 		"""
 		tip = ' '.join(tip)
 		await kurisu.tips.search(tip, self.client, 0)
+
 
 def setup(bot):
 	bot.add_cog(SteinsGate(bot))

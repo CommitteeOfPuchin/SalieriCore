@@ -1,6 +1,6 @@
 ﻿import discord, time, asyncio
-
 import kurisu.prefs
+
 
 async def loop():
   client = kurisu.prefs.discordClient

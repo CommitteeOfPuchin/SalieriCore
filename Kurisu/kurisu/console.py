@@ -1,11 +1,11 @@
-import asyncio, discord
+import discord
 from aioconsole import ainput
 
 import kurisu.prefs
 
 async def consoleIO():
 	client = kurisu.prefs.discordClient
-	channels = ['','','','','','','','','','','']
+	channels = ['', '', '', '', '', '', '', '', '', '', '']
 	channelID = await ainput('Channel ID: ')
 	test = False
 	if channelID == '':
@@ -44,7 +44,7 @@ async def consoleIO():
 				attr[1] = int(attr[1])
 				
 				channels[attr[1]] = client.get_channel(attr[0])
-				if channels[attr[1]] == None:
+				if channels[attr[1]] is None:
 					print('Канал с ID %s не найден' % attr[0])
 				else:
 					print('Канал %s изменен на #%s (%s)' % (attr[1], channels[attr[1]].name, attr[0]))

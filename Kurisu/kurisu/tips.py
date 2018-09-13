@@ -1,4 +1,4 @@
-import discord, asyncio, copy
+import discord, copy
 
 from .search import *
 
@@ -6,13 +6,15 @@ k_ru = [[], []]
 k_eng = [[], []]
 k = [[], []]
 tips = [[], []]
-kirill = ('абвгдеёжзийклмнопрстуфхцчшщъыьэюя')
+kirill = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
 
 tipsEmbed = discord.Embed(colour = discord.Colour.dark_red())
 tipsEmbed.set_thumbnail(url = 'https://pp.userapi.com/c831208/v831208232/1655b0/KlMKUSjaQws.jpg')
 
+
 def unif(s):
 	return s.replace('.', '').replace(' ', '').replace('-', '').lower()
+
 
 def init():
 	with open('tips0.txt', 'r') as f:
@@ -30,6 +32,7 @@ def init():
 			k[1].append(tmp[i*3])
 			k_eng[1].append(unif(tmp[i*3+1]))
 			tips[1].append(tmp[i*3+2])
+
 
 async def search(tip, discordClient, sg=1):
 	tip = unif(tip)
@@ -51,7 +54,7 @@ async def search(tip, discordClient, sg=1):
 			if tmp < test[1]:
 				test = [t, tmp]
 		
-		perc = (1 -  float(test[1]) / float(len(test[0])))*100
+		perc = (1 - float(test[1]) / float(len(test[0])))*100
 		if perc < 85:
 			if test[1] > 2:
 				await discordClient.say('Ничего не найдено. Попробуйте точнее.')
@@ -65,7 +68,7 @@ async def search(tip, discordClient, sg=1):
 	tip[1] = tip[1].replace('[linebreak]', '\n')
 
 	tmpEmbed = copy.deepcopy(tipsEmbed)
-	tmpEmbed.set_author(name = t, icon_url="https://pp.userapi.com/c831209/v831209232/15d24c/tA_XzT7cXYA.jpg")
-	tmpEmbed.add_field(name = k[sg][i], value = tip[1], inline = True)
-	tmpEmbed.set_footer(text = tip[0])
-	await discordClient.say(embed = tmpEmbed)
+	tmpEmbed.set_author(name=t, icon_url="https://pp.userapi.com/c831209/v831209232/15d24c/tA_XzT7cXYA.jpg")
+	tmpEmbed.add_field(name=k[sg][i], value=tip[1], inline=True)
+	tmpEmbed.set_footer(text=tip[0])
+	await discordClient.say(embed=tmpEmbed)

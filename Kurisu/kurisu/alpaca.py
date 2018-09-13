@@ -1,10 +1,10 @@
-import discord, asyncio, time, datetime, sqlite3
+import asyncio, datetime, sqlite3
 from math import floor
 import kurisu.prefs
 
 ibn = kurisu.prefs.Channels.dev
 alpacaRole = kurisu.prefs.Roles.alpaca
-dealp = [False,'']
+
 
 async def alpacaLoop():
 	client = kurisu.prefs.discordClient
@@ -30,7 +30,7 @@ async def alpacaLoop():
 			t = datetime.datetime.fromtimestamp(a[0][2]) - datetime.timedelta(hours=3)
 			r = floor((t - datetime.datetime.now()).total_seconds())
 			if r <= 60:
-				dealp =  [True, str(a[0][1])]
+				dealp = [True, str(a[0][1])]
 				dt = r
 				print(r)
 			else:

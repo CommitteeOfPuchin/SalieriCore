@@ -1,6 +1,5 @@
-import inspect, re, os
+import re, os
 from discord.ext import commands
-import discord
 import kurisu.prefs
 import datetime, sqlite3
 
@@ -11,12 +10,14 @@ _mentions_transforms = {
 
 _mention_pattern = re.compile('|'.join(_mentions_transforms.keys()))
 
+
 def cache_size():
 	try:
 		stdout = os.popen('du -h /home/pi/MusicBot/audio_cache').readline()
 		return "%s" % stdout.split()[0].replace(',', '.')
 	except:
 		return "недоступен"
+
 
 class FGL:
 	"""Просто все подряд, десу"""
@@ -110,6 +111,7 @@ class FGL:
 			emb.title = '%s%s%s' % (u,  "" if (u.name == u.display_name) else (" a.k.a %s" % u.display_name), u.bot and " [BOT]" or '')
 			emb.add_field(name="ID:", value=u.id, inline=False)
 			embDays = (datetime.datetime.now() - u.joined_at).days
+
 			def isYa(num):
 				return (num%10 > 1) and (num%10 < 5) and ((num//10 == 0) or (num//10 > 1))
 
@@ -165,6 +167,7 @@ class FGL:
 				emb.add_field(name="Остальные роли", value=", ".join(roles), inline=False)
 			emb.set_thumbnail(url=kurisu.prefs.avatar_url(u))
 			await self.bot.say(embed=emb)
+
 
 def setup(bot):
 	bot.remove_command("help")

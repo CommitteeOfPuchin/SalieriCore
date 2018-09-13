@@ -4,6 +4,7 @@ allTasks = {}
 
 loop = None
 
+
 async def new(task):
 	if asyncio.iscoroutinefunction(task):
 		fn = '%s.%s' % (task.__module__, task.__name__)
@@ -12,6 +13,7 @@ async def new(task):
 		return True
 	else:
 		return False
+
 
 async def cancel(task):
 	fn = '%s.%s' % (task.__module__, task.__name__)

@@ -1,10 +1,12 @@
 from discord.ext import commands
-import discord, time, datetime, sqlite3
+import datetime, sqlite3
 import kurisu.prefs
 import kurisu.tasks
 
+
 def unixTime(dt):
-	return (dt - datetime.datetime(1970,1,1)).total_seconds()
+	return (dt - datetime.datetime(1970, 1, 1)).total_seconds()
+
 
 class Upa:
 	"""Команды, доступные только администраторам и модераторам"""
@@ -47,7 +49,7 @@ class Upa:
 		end = now
 		if len(time) == 0:
 			time = ['17520h']
-		
+
 		try:
 			for t in time:
 				if (t[-1] == 's') or (t[-1] == 'с'):
@@ -102,6 +104,7 @@ class Upa:
 			await self.bot.say("%s больше не Альпакамен." % u.mention)
 		conn.commit()
 		conn.close()
+
 
 def setup(bot):
 	bot.add_cog(Upa(bot))

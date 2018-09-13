@@ -1,7 +1,8 @@
-import asyncio, discord
+import asyncio
 import kurisu.prefs
 
 test = True
+
 
 async def loop():
 	"""Просто пишет Hello World

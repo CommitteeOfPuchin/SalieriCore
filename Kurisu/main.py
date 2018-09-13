@@ -1,7 +1,7 @@
-import discord, asyncio, urllib.request, os.path, sqlite3, copy, time, datetime
+import discord, datetime
 
 import kurisu.nyaa, kurisu.tips, kurisu.override, kurisu.alpaca, kurisu.prefs, kurisu.tasks
-import traceback, requests, signal, sys
+import requests, signal, sys
 
 from discord.ext import commands
 
@@ -13,17 +13,19 @@ client = commands.Bot(command_prefix='!', description='Amadeus Systems', formatt
 ready = False
 taskList = {}
 
+fubuki = lambda text, desc: {'embeds': [{'color': '3066993', 'title': text, 'description': desc}]}
+
+
 def sigint_handler(sig, frame):
 	desc = '{u.mention} отключена.'.format(u=client.user)
-	req = requests.post(kurisu.prefs.webhook, json={'embeds': [{'color': '15158332', 'title': 'Ядро Salieri отключено.', 'description': desc}]})
+	requests.post(kurisu.prefs.webhook, json=fubuki("Ядро Salieri отключено.", desc))
 	sys.exit(0)
 
-signal.signal(signal.SIGINT, sigint_handler)
 
 @client.event
 async def on_ready():
 	global ready
-	if ready == True:
+	if ready:
 		await client.send_message(kurisu.prefs.Channels.dev, "Переподключение...")
 	else:
 		print('[Discord] | Initializing tips')
@@ -39,10 +41,10 @@ async def on_ready():
 		kurisu.prefs.startup = datetime.datetime.now()
 
 	desc = '{u.mention} готова к работе.'.format(u=client.user)
-	req = requests.post(kurisu.prefs.webhook, json={'embeds': [{'color': '3066993', 'title': 'Ядро Salieri запущено.', 'description': desc}]})
+	requests.post(kurisu.prefs.webhook, json=fubuki("Ядро Salieri запущено.", desc))
 	ready = True
 
-# Тут начинаются команды
+signal.signal(signal.SIGINT, sigint_handler)
 
 if __name__ == "__main__":
 	for extension in startup_system:

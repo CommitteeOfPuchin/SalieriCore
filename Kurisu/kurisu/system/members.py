@@ -1,5 +1,5 @@
-from discord.ext import commands
 import kurisu.prefs, sqlite3, datetime
+
 
 class Events:
 	def __init__(self, bot):
@@ -23,7 +23,7 @@ class Events:
 				pt = kurisu.prefs.parse_time(t.timetuple())
 				pt = '%s %s' % (pt[0], pt[1])
 				tmpEmbed.add_field(name="Альпакамен", value="до %s" % pt)
-				await client.add_roles(member, kurisu.prefs.Roles.alpaca)
+				await kurisu.prefs.discordClient.add_roles(member, kurisu.prefs.Roles.alpaca)
 			else:
 				tmpEmbed.add_field(name="Альпакамен", value="Роль снята")
 				cursor.execute('delete from alpaca where userID = %s' % member.id)
