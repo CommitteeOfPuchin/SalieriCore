@@ -1,0 +1,7 @@
+lang | ru
+success | Установлена локаль: %s
+av | Доступные локали: %s
+
+lang | eng
+success | Selected locale: %s
+av | Available locales: %s

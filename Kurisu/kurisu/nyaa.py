@@ -6,7 +6,8 @@ import kurisu.prefs
 templates = {'HorribleSubs': ['[HorribleSubs] Steins Gate 0 - ', ' [1080p].mkv'], 'Erai-raws': ['[Erai-raws] Steins Gate 0 - ', ' [1080p].mkv']}
 nyaa_dls = ['HorribleSubs', 'Erai-raws']
 
-dsgt = False
+dsgt = True
+
 
 async def getPage(dl):
     async with aiohttp.ClientSession() as session:
@@ -14,9 +15,9 @@ async def getPage(dl):
             resp = await response.text()
     return resp
 
+
 async def fetch():
-    channel = kurisu.prefs.Channels.news
-    client = kurisu.prefs.discordClient
+    channel = kurisu.prefs.Channels.get('news')
     dsgtEmbed = kurisu.prefs.Embeds.dsgt
     global dsgt
     while True:
@@ -26,8 +27,8 @@ async def fetch():
             pt = '%s в %s' % (pt[0], pt[1][:-3])
             dsgtEmbed.set_footer(text='Последнее обновление БД: %s' % pt)
 
-            await client.send_message(channel, '@here')
-            await client.send_message(channel, embed=dsgtEmbed)
+            await channel.send('<@&492018941246570508>')
+            await channel.send(embed=dsgtEmbed)
             dsgt = False
 
         for dl in nyaa_dls:
@@ -44,8 +45,8 @@ async def fetch():
             t = '%s в %s' % (t[0], t[1][:-3])
             nyaaEmbed.set_footer(text = 'Последнее обновление БД: %s' % t)
 
-            await client.send_message(channel, '@here')
-            await client.send_message(channel, embed = nyaaEmbed)
+            await channel.send('<@&492018941246570508>')
+            await channel.send(embed=nyaaEmbed)
 
         t = time.localtime()
         if (t[6] == 2 and t[3] >= 19) or (t[6] == 3 and t[3] < 6):

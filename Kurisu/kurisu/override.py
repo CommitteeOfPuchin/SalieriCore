@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-import itertools, inspect
+import itertools, inspect, asyncio
 
 
 class newHelpFormatter(commands.formatter.HelpFormatter):
@@ -13,7 +13,7 @@ class newHelpFormatter(commands.formatter.HelpFormatter):
 		return "Набери {0}{1} <команда>, чтобы получить больше информации о команде.\n" \
 					"Также ты можешь набрать {0}{1} <категория>, чтобы получить больше информации о категории".format(self.clean_prefix, command_name)
 
-	def format(self):
+	async def format(self):
 		helpEmbed = discord.Embed(colour=discord.Colour.dark_red())
 		command_name = self.context.invoked_with
 		helpEmbed.set_author(name="%s%s" % (self.clean_prefix, command_name), icon_url="https://pp.userapi.com/c831209/v831209232/15d24c/tA_XzT7cXYA.jpg")
@@ -40,9 +40,11 @@ class newHelpFormatter(commands.formatter.HelpFormatter):
 			cog = tup[1].cog_name
 			return cog + ':' if cog is not None else '\u200bБез категории:'
 
+		filtered = await self.filter_command_list()
+
 		if self.is_bot():
 			helpEmbed.title = "Makise Kurisu"
-			data = sorted(self.filter_command_list(), key=category)
+			data = sorted(filtered, key=category)
 			for ctg, cmds in itertools.groupby(data, key=category):
 				if ctg == "Amadeus:":
 					continue
@@ -59,7 +61,7 @@ class newHelpFormatter(commands.formatter.HelpFormatter):
 				helpEmbed.add_field(name=ctg, value='\n'.join(subs))
 		else:
 			subs = []
-			for name, cmd in self.filter_command_list():
+			for name, cmd in filtered:
 				subs.append("%s: %s" % (name, cmd.short_doc))
 			
 			helpEmbed.add_field(name="Команды:", value='\n'.join(subs))

@@ -3,15 +3,49 @@ import sqlite3, time, os.path
 from discord.ext import commands
 
 
-class SteinsGate:
+class SteinsGate(commands.Cog, name='Штаны Гея'):
 	"""Команды, связанные с Steins;Gate"""
 	client = None
 
 	def __init__(self, bot):
 		self.client = bot
 
+	@commands.command(name='sub')
+	async def sg_sub(self, ctx):
+		"""Подписка на события, связанные с трансляциями и торрентами S;G 0.
+
+		`Команда не принимает аргументы.`
+		"""
+
+		u = ctx.message.author
+		r = kurisu.prefs.Roles.get('sub')
+
+		if r not in u.roles:
+			await u.add_roles(r, reason='Желание %s' % u.display_name)
+			await ctx.message.channel.send('Вы подписались на уведомления.')
+
+		else:
+			await ctx.message.channel.send('Вы уже подписались на уведомления.')
+
+	@commands.command(name='unsub')
+	async def sg_unsub(self, ctx):
+		"""Отписка от событий, связанных с трансляциями и торрентами S;G 0.
+
+		`Команда не принимает аргументы.`
+		"""
+
+		u = ctx.message.author
+		r = kurisu.prefs.Roles.get('sub')
+
+		if r in u.roles:
+			await u.remove_roles(r, reason='Желание %s' % u.display_name)
+			await ctx.message.channel.send('Вы отписались от уведомлений.')
+
+		else:
+			await ctx.message.channel.send('Вы и так не подписаны на уведомления.')
+
 	@commands.command()
-	async def tips(self, *tip: str):
+	async def tips(self, ctx, *tip: str):
 		"""Поиск по TIPS Steins;Gate.
 
 		Аргументы:
@@ -20,10 +54,10 @@ class SteinsGate:
 			TIP, который нужно найти.
 		"""
 		tip = ' '.join(tip)
-		await kurisu.tips.search(tip, self.client)
+		await kurisu.tips.search(tip, ctx)
 
 	@commands.command()
-	async def sg0(self, episode: int):
+	async def sg0(self, ctx, episode: int):
 		"""Выводит список .torrent файлов.
 
 		Аргументы:
@@ -41,7 +75,7 @@ class SteinsGate:
 		cursor.execute("select title from episodes where id = %s" % episode)
 		ep = cursor.fetchall()
 		if len(ep) == 0:
-			await self.client.say('```Такой серии нет и не будет.```')
+			await ctx.send('```Такой серии нет и не будет.```')
 			return "Fuck"
 
 		for dl in kurisu.nyaa.nyaa_dls:
@@ -63,10 +97,10 @@ class SteinsGate:
 		pt = kurisu.prefs.parse_time(time.localtime(os.path.getmtime('torr_db.sqlite3')))
 		pt = '%s в %s' % (pt[0], pt[1][:-3])
 		tmpEmbed.set_footer(text='Последнее обновление БД: %s' % pt)
-		await self.client.say(embed=tmpEmbed)
+		await ctx.send(embed=tmpEmbed)
 
 	@commands.command()
-	async def tips0(self, *tip: str):
+	async def tips0(self, ctx, *tip: str):
 		"""Поиск по TIPS Steins;Gate 0.
 
 		Аргументы:
@@ -75,7 +109,7 @@ class SteinsGate:
 			TIP, который нужно найти.
 		"""
 		tip = ' '.join(tip)
-		await kurisu.tips.search(tip, self.client, 0)
+		await kurisu.tips.search(tip, ctx, 0)
 
 
 def setup(bot):

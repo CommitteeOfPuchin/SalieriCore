@@ -1,0 +1,13 @@
+lang | ru
+cache | Кэш: %s
+bot | Бот
+moeka | Моэка
+stats | Статистика
+root | Корень: %s
+
+lang | eng
+cache | Cache: %s
+bot | Bot
+moeka | Moeka
+stats | Stats
+root | Root dir: %s
